@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EcoTwin | Smart Waste Management Digital Twin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070f2e;--ink:#e8eeff;--pan:rgba(22,36,88,.62);--ln:#2b407f;--mut:#9fb0d9;--ok:#2ee6a6;--wn:#f4b400;--bad:#ff4d6d;--bl:#4cc9f0;--map:#081238;--gold:#f4c95d}
+*{box-sizing:border-box;margin:0}
+body{font:14px/1.5 "IBM Plex Sans",system-ui,sans-serif;color:var(--ink);display:flex;min-height:100vh;background:radial-gradient(900px 500px at 88% -8%,rgba(60,110,255,.35),transparent),radial-gradient(800px 500px at -8% 108%,rgba(20,190,200,.22),transparent),linear-gradient(160deg,#050b24,#0b1a4a 55%,#070f2e) fixed}
+h1,h2,h3,.big{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+nav{width:218px;flex:none;background:rgba(5,10,32,.8);backdrop-filter:blur(10px);color:#dfe6f3;padding:18px 10px;position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--ln)}
+nav h1{font-size:24px;padding:0 10px 2px;background:linear-gradient(90deg,#fff,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav p{font-size:12px;color:var(--mut);padding:0 10px 14px}
+nav a{display:block;padding:8px 10px;border-radius:8px;color:#c9d4ea;text-decoration:none;cursor:pointer}
+nav a:hover{background:rgba(76,201,240,.14)}nav a.on{background:var(--gold);color:#0a1540;font-weight:500}
+main{flex:1;padding:22px;min-width:0}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+header h2{font-size:32px;line-height:1.1;background:linear-gradient(90deg,#fff,#8fd3ff);-webkit-background-clip:text;background-clip:text;color:transparent}header span{color:var(--mut)}
+.live{display:inline-flex;gap:6px;align-items:center;font-size:12px;color:var(--ok)}.live:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:p 1.4s infinite}
+@keyframes p{50%{opacity:.25}}
+.g{display:grid;gap:14px}.k{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.c2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.card{background:var(--pan);border:1px solid var(--ln);border-radius:14px;padding:14px;backdrop-filter:blur(8px);box-shadow:0 8px 28px rgba(0,0,0,.3)}
+.card h3{font-size:16px;margin-bottom:8px}
+.big{font-size:34px;font-weight:800;line-height:1;color:#fff}.sm{color:var(--mut);font-size:12px}
+.map{width:100%;background:var(--map);border-radius:14px;display:block;border:1px solid var(--ln);box-shadow:0 0 40px rgba(76,201,240,.12)}
+.rd{stroke:#162a66;stroke-width:6}.path{fill:none;stroke:var(--gold);stroke-width:3;stroke-dasharray:7 5}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--ln)}th{font-size:12px;color:var(--mut);font-weight:500}tr:hover td{background:rgba(255,255,255,.04)}
+.bar{height:8px;background:#1b2d6b;border-radius:5px;overflow:hidden}.bar i{display:block;height:100%}
+.tag{padding:2px 8px;border-radius:20px;font-size:12px;color:#04102e;font-weight:500}
+button,select,input,textarea{font:inherit;padding:8px 12px;border-radius:8px;border:1px solid var(--ln);background:#0d1a45;color:var(--ink)}
+::placeholder{color:#7d8fc0}
+button{background:var(--gold);color:#0a1540;cursor:pointer;border:0;font-weight:500}button:hover{filter:brightness(1.08)}button.alt{background:transparent;color:var(--ink);border:1px solid var(--ln)}button.alt:hover{border-color:var(--bl)}
+input[type=range],input[type=checkbox]{accent-color:var(--gold)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--bl);outline-offset:2px}
+code{color:var(--gold)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.al{padding:8px 10px;border-left:4px solid var(--wn);background:rgba(255,255,255,.05);margin-bottom:6px;border-radius:0 8px 8px 0}.al.crit{border-color:var(--bad)}.al.fire{border-color:#ff6b00;background:rgba(255,107,0,.14)}.al.ok{border-color:var(--ok)}
+.col{display:flex;align-items:flex-end;gap:4px;height:120px}.col div{flex:1;background:linear-gradient(var(--bl),#4cc9f0);border-radius:4px 4px 0 0;min-width:6px}
+.donut{width:150px;height:150px;border-radius:50%}
+.cl{height:380px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:4px 2px;margin-bottom:10px}
+.m{max-width:82%;padding:9px 12px;border-radius:14px;white-space:pre-wrap}.m.u{align-self:flex-end;background:var(--gold);color:#0a1540;border-bottom-right-radius:4px}.m.a{align-self:flex-start;background:#1b2d6b;border-bottom-left-radius:4px}
+@media(max-width:800px){body{flex-direction:column}nav{width:100%;height:auto;position:static;display:flex;overflow-x:auto;gap:4px;padding:10px}nav h1,nav p{display:none}nav a{white-space:nowrap}}
+@media(prefers-reduced-motion:reduce){.live:before{animation:none}}
+</style></head><body>
+<nav id="nav"><h1>EcoTwin</h1><p>City waste, mirrored live</p></nav>
+<main><header><div><h2 id="ttl"></h2><span id="sub"></span></div><div class="live">Twin synced <b id="clk"></b></div></header><div id="v"></div></main>
+<script>
+const $=s=>document.querySelector(s),rnd=(a,b)=>a+Math.random()*(b-a),d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const Z=['North','East','South','West','Central'],T=['Organic','Plastic','Paper','Metal','E-waste'];
+const DEP={x:30,y:372};
+const bins=[...Array(36)].map((_,i)=>({id:'B'+(100+i),x:45+(i%6)*100+rnd(-18,18),y:38+Math.floor(i/6)*58+rnd(-8,8),fill:rnd(5,95),rate:rnd(.3,1.5),temp:rnd(20,34),bat:rnd(35,100),type:T[i%5],zone:Z[i%5]}));
+const mkTruck=n=>({id:'TR-'+n,x:DEP.x,y:DEP.y,tgt:null,fuel:100,trips:0});
+let trucks=[mkTruck(1),mkTruck(2),mkTruck(3)],L=[],cur='overview',tk=0;
+const S={mult:1,rain:0,kg:0,km:0,sel:null,route:null,comp:{Organic:0,Plastic:0,Paper:0,Metal:0,'E-waste':0},pts:{North:0,East:0,South:0,West:0,Central:0}};
+let TK=[];try{TK=JSON.parse(localStorage.getItem('tk')||'[]')}catch(e){}
+const saveTK=()=>{try{localStorage.setItem('tk',JSON.stringify(TK))}catch(e){}};
+const STN=['Received','Truck dispatched','Resolved'];
+const col=f=>f>=90?'#ff4d6d':f>=70?'#f4b400':'#2ee6a6';
+const log=(t,m)=>{L.unshift({t,m,at:new Date().toLocaleTimeString()});L=L.slice(0,40)};
+const avg=()=>bins.reduce((s,b)=>s+b.fill,0)/bins.length;
+const hrs=b=>Math.max(0,(100-b.fill)/(b.rate*S.mult*(S.rain?1.2:1)*6));
+const bar=(v,c)=>`<div class="bar"><i style="width:${Math.min(100,v)}%;background:${c||col(v)}"></i></div>`;
+const kpi=(l,v,s)=>`<div class="card"><div class="sm">${l}</div><div class="big">${v}</div><div class="sm">${s||''}</div></div>`;
+
+function map(path){
+ const r=[...Array(7)].map((_,i)=>`<line x1="0" x2="640" y1="${20+i*58}" y2="${20+i*58}" class="rd"/><line y1="0" y2="400" x1="${i*100}" x2="${i*100}" class="rd"/>`).join('');
+ return `<svg viewBox="0 0 640 400" class="map" role="img" aria-label="Live city twin map">${r}
+ ${path?`<polyline points="${path.map(p=>p.x+','+p.y).join(' ')}" class="path"/>`:''}
+ <rect x="${DEP.x-11}" y="${DEP.y-11}" width="22" height="22" rx="5" fill="#f4c95d"/><text x="${DEP.x+16}" y="${DEP.y+4}" fill="#f4c95d" font-size="11">Depot</text>
+ ${bins.map(b=>`<circle cx="${b.x}" cy="${b.y}" r="${b.id==S.sel?12:b.fill>=90?9:7}" fill="${col(b.fill)}" stroke="${b.fire?'#ff6b00':b.hw?'#4cc9f0':'#fff'}" stroke-width="${b.fire||b.hw?4:1.5}" onclick="pick('${b.id}')" style="cursor:pointer"><title>${b.id} ${b.type} ${b.fill|0}%</title></circle>`).join('')}
+ ${trucks.map(t=>`<text x="${t.x-9}" y="${t.y+6}" font-size="18">🚛</text>`).join('')}</svg>`;
+}
+function binCard(){const b=bins.find(x=>x.id==S.sel);if(!b)return `<div class="card"><h3>Select a bin</h3><p class="sm">Tap any dot on the map to open its digital twin.</p></div>`;
+ return `<div class="card"><h3>${b.id} · ${b.type} bin</h3><p class="sm">${b.zone} zone</p><p>Fill ${b.fill|0}%</p>${bar(b.fill)}<p>Temperature ${b.temp.toFixed(1)}°C</p>${bar(b.temp*1.5,b.temp>50?'#ff6b00':'#4cc9f0')}<p>Sensor battery ${b.bat|0}%</p>${bar(b.bat,b.bat<30?'#ff4d6d':'#2ee6a6')}<p class="sm">Full in about ${hrs(b).toFixed(1)} h</p><div class="row" style="margin-top:8px"><button onclick="force('${b.id}')">Dispatch nearest truck</button></div></div>`}
+function plan(){
+ const todo=bins.filter(b=>b.fill>=60);let p=DEP,left=[...todo],path=[DEP],opt=0;
+ while(left.length){left.sort((a,b)=>d(p,a)-d(p,b));const n=left.shift();opt+=d(p,n);path.push(n);p=n}
+ opt+=d(p,DEP);path.push(DEP);
+ let nv=0;p=DEP;todo.forEach(b=>{nv+=d(p,b);p=b});nv+=d(p,DEP);
+ S.route={path,opt:opt*.04,nv:nv*.04,n:todo.length};render();
+}
+function force(id){const b=bins.find(x=>x.id==id);const t=trucks.sort((a,c)=>d(a,b)-d(c,b))[0];if(t.tgt)t.tgt.taken=null;t.tgt=b;b.taken=t.id;log('ok',`${t.id} rerouted to ${id}`);render()}
+function pick(id){S.sel=id;render()}
+function paintTK(){const e=$('#tl');if(e)e.innerHTML=TK.slice(0,8).map(t=>`<div class="al ${t.st==2?'ok':''}"><b>${t.id}</b> · ${t.bin} · ${t.ty}${t.note?' · '+t.note.replace(/</g,'&lt;'):''}<div class="row" style="margin-top:4px">${STN.map((x,i)=>`<span class="tag" style="background:${i<=t.st?'#2ee6a6':'#8a98c4'}">${x}</span>`).join('')}</div><div class="sm">${t.at}</div></div>`).join('')||'<p class="sm">No tickets yet. Report a bin and track it here.</p>';
+ const p=$('#lb');if(p)p.innerHTML=Object.entries(S.pts).sort((a,b)=>b[1]-a[1]).map(([z,v])=>`<p>${z}: ${v} pts</p>${bar(v/2,'#f4b400')}`).join('')}
+function report(){const id=$('#rb').value,b=bins.find(x=>x.id==id),ty=$('#rt').value,note=$('#rn').value.trim(),m=$('#msg');
+ const dup=TK.find(t=>t.bin==id&&t.st<2);
+ if(dup){m.textContent=`${id} already has open ticket ${dup.id}. Track it below.`;return}
+ if(ty=='Other'&&note.length<5){m.textContent='Add a short note so crews know what to expect.';return}
+ const t={id:'T-'+(1000+TK.length+1),bin:id,zone:b.zone,ty,note,st:0,at:new Date().toLocaleTimeString()};
+ TK.unshift(t);b.flag=1;saveTK();log('crit',`Citizen ticket ${t.id}: ${ty} at ${id} (${b.zone})`);
+ m.textContent=`Ticket ${t.id} created. A truck will be assigned shortly.`;$('#rn').value='';paintTK();
+ fetch('/api/reports',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({bin:id,type:ty,note})}).catch(()=>{})}
+const J=b=>({method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(b)});
+let CH=[{r:'a',t:'Hi! I am EcoTwin AI. Ask me about live bins, routes, recycling, carbon, or this project.'}],busy=0;
+const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function paintChat(){const e=$('#cl');if(!e)return;e.innerHTML=CH.map(m=>`<div class="m ${m.r}">${esc(m.t)}</div>`).join('');e.scrollTop=e.scrollHeight}
+function local(q){q=q.toLowerCase();const top=[...bins].sort((a,b)=>b.fill-a.fill),crit=bins.filter(b=>b.fill>=90),tot=Object.values(S.comp).reduce((a,b)=>a+b,0);
+ const zs=Z.map(z=>{const l=bins.filter(b=>b.zone==z);return[z,l.reduce((s,b)=>s+b.fill,0)/l.length]}).sort((a,b)=>b[1]-a[1]);
+ if(/zone|where|first|priorit|trucks? (need|go)/.test(q))return `${zs[0][0]} zone is under the most pressure at ${zs[0][1].toFixed(0)}% average fill, then ${zs[1][0]} at ${zs[1][1].toFixed(0)}%. Send trucks there first. ${trucks.length} trucks are on the road.`;
+ if(/critical|full|overflow|urgent|how many/.test(q))return crit.length?`${crit.length} bins are critical (90%+): ${crit.slice(0,6).map(b=>b.id+' in '+b.zone).join(', ')}. Open the Twin map and press Dispatch.`:`No bin is above 90% right now. The fullest is ${top[0].id} at ${top[0].fill|0}%.`;
+ if(/fire|temp|hot|heat/.test(q)){const f=bins.filter(b=>b.temp>45);return f.length?`Fire risk on ${f.map(b=>b.id+' ('+(b.temp|0)+'°C)').join(', ')}. Send an inspection crew.`:'No fire-risk readings right now. Alerts trigger above 50°C.'}
+ if(/route|distance|km|optimi/.test(q))return 'Open Route optimiser to tour every bin above 60% with nearest-neighbour. The Backend lab runs a 2-opt version on the server. Both show the km saved.';
+ if(/recycl|segregat|plastic|organic|mix/.test(q))return tot>1?`Recovery rate so far is ${((S.comp.Plastic+S.comp.Paper+S.comp.Metal)/tot*100).toFixed(0)}% (target 60%). To raise it: colour-coded bins, citizen eco-points by zone, and a separate pickup for dry recyclables.`:'Waiting for the first pickups. To raise recovery: colour-coded bins, eco-points by zone, and separate dry-recyclable pickups.';
+ if(/co2|carbon|green|emission|sustain/.test(q))return `So far ${(S.kg*.12+S.km*.1).toFixed(0)} kg of CO₂ avoided, over ${S.km.toFixed(1)} km driven. Shorter routes and fewer empty trips cut diesel use.`;
+ if(/energy|biogas|power/.test(q))return `Organic waste collected could yield about ${(S.comp.Organic*.2).toFixed(0)} kWh of biogas (roughly 0.2 kWh per kg).`;
+ if(/ticket|citizen|report|complaint/.test(q))return `${TK.filter(t=>t.st<2).length} citizen tickets are open and ${TK.filter(t=>t.st==2).length} resolved. Reported bins get a truck even below 70% full.`;
+ if(/what is|explain|how does|pitch|project|twin|hackathon/.test(q))return 'EcoTwin is a live digital twin of a city waste system. IoT bins stream fill level and heat, an AI model predicts overflow, trucks are routed on the shortest tour, and citizens report problems that are tracked to resolution. Result: fewer trips, less CO₂, cleaner streets.';
+ if(/^(hi|hello|hey)/.test(q))return 'Hello! Ask me which zone needs trucks, how many bins are critical, or about recycling and CO₂.';
+ return 'I can answer about critical bins, zones, routes, fire risk, recycling, CO₂, biogas and citizen tickets. Try a suggestion above. With an ANTHROPIC_API_KEY set on Vercel I can also answer open-ended questions.'}
+async function say(text){if(busy)return;const i=$('#cq'),q=(text||(i&&i.value)||'').trim();if(!q)return;if(i)i.value='';busy=1;
+ const hist=CH.slice(-6).map(({r,t})=>({r,t}));CH.push({r:'u',t:q},{r:'a',t:'Thinking...'});paintChat();
+ let a,mode='built-in rules';
+ try{const r=await fetch('/api/ask',J({q,history:hist,trucks:trucks.length,bins:bins.map(({id,zone,type,fill,temp})=>({id,zone,type,fill,temp}))}));const j=await r.json();if(j.mode=='claude'){a=j.answer;mode='Claude'}}catch(e){}
+ CH[CH.length-1].t=a||local(q);busy=0;paintChat();const m=$('#cm');if(m)m.textContent='Answered by: '+mode}
+async function hw(){try{await fetch('/api/ingest',J({id:'B100',fill:97,temp:31}));log('ok','Hardware reading sent for B100')}catch(e){log('crit','Ingest API not reachable')}}
+async function srv(){const e=$('#rs');try{const r=await fetch('/api/route',J({depot:DEP,bins:bins.filter(b=>b.fill>=60).map(({id,x,y})=>({id,x,y}))}));const j=await r.json();S.route={path:j.path,opt:j.optKm,nv:j.nnKm,n:j.path.length-2};e.textContent=`${j.optKm.toFixed(1)} km vs ${j.nnKm.toFixed(1)} km nearest-neighbour. Open Route optimiser to see it.`}catch(err){e.textContent='API not reachable.'}}
+setInterval(async()=>{try{const r=await(await fetch('/api/state')).json();bins.forEach(b=>{const v=r.readings[b.id];if(v){b.fill=v.fill;if(v.temp!=null)b.temp=v.temp;b.hw=1}else b.hw=0})}catch(e){}},3000);
+
+const V={
+overview:()=>`<div class="g k">${kpi('Smart bins',bins.length,'IoT sensors online')}${kpi('Average fill',avg().toFixed(0)+'%')}${kpi('Critical bins',bins.filter(b=>b.fill>=90).length,'above 90%')}${kpi('Trucks active',trucks.filter(t=>t.tgt).length+'/'+trucks.length)}${kpi('Collected',(S.kg/1000).toFixed(2)+' t','since you opened the twin')}</div><div class="g c2" style="margin-top:14px;grid-template-columns:2fr 1fr">${map()}<div class="card"><h3>Latest alerts</h3>${L.slice(0,5).map(a=>`<div class="al ${a.t}">${a.m}<div class="sm">${a.at}</div></div>`).join('')||'<p class="sm">All quiet.</p>'}</div></div>`,
+map:()=>`<div class="g c2" style="grid-template-columns:2fr 1fr">${map()}${binCard()}</div>`,
+sensors:()=>`<div class="card"><h3>IoT sensor feed</h3><div style="overflow-x:auto"><table><tr><th>Bin</th><th>Type</th><th>Zone</th><th>Fill</th><th>Temp</th><th>Battery</th><th>Status</th></tr>${[...bins].sort((a,b)=>b.fill-a.fill).map(b=>`<tr onclick="pick('${b.id}')"><td>${b.id}</td><td>${b.type}</td><td>${b.zone}</td><td style="min-width:110px">${b.fill|0}%${bar(b.fill)}</td><td>${b.temp.toFixed(0)}°C</td><td>${b.bat|0}%</td><td><span class="tag" style="background:${b.fire?'#ff6b00':b.bat<30?'#a3e635':col(b.fill)}">${b.fire?'Fire risk':b.bat<30?'Replace battery':b.fill>=90?'Critical':b.fill>=70?'Plan pickup':'Normal'}</span></td></tr>`).join('')}</table></div></div>`,
+routes:()=>{const r=S.route;return `<div class="row" style="margin-bottom:12px"><button onclick="plan()">Optimise route for bins above 60%</button></div><div class="g c2" style="grid-template-columns:2fr 1fr">${map(r&&r.path)}<div class="card"><h3>Route result</h3>${r?`<p>${r.n} bins on the tour</p><p>Naive order: <b>${r.nv.toFixed(1)} km</b></p><p>Optimised: <b>${r.opt.toFixed(1)} km</b></p><div class="big" style="color:var(--ok)">${Math.max(0,(1-r.opt/r.nv)*100).toFixed(0)}% shorter</div><p class="sm">Nearest-neighbour heuristic. Swap in Google OR-Tools for production.</p>`:'<p class="sm">Press the button to compute a tour.</p>'}</div></div>`},
+fleet:()=>`<div class="row" style="margin-bottom:12px"><button onclick="trucks.length<8&&trucks.push(mkTruck(trucks.length+1));render()">Add truck</button><button class="alt" onclick="trucks.length>1&&trucks.pop();render()">Remove truck</button></div><div class="g c2">${trucks.map(t=>`<div class="card"><h3>${t.id}</h3><p>${t.tgt?'Collecting '+t.tgt.id:'Returning to depot'}</p><p class="sm">Fuel ${t.fuel|0}%</p>${bar(t.fuel,t.fuel<30?'#ff4d6d':'#4cc9f0')}<p class="sm">Trips today: ${t.trips}</p></div>`).join('')}</div>`,
+ai:()=>{const s=[...bins].sort((a,b)=>hrs(a)-hrs(b)).slice(0,8);const h=[...Array(24)].map((_,i)=>bins.filter(b=>b.fill+b.rate*S.mult*6*i>=90).length);const m=Math.max(...h,1);
+ return `<div class="g c2"><div class="card"><h3>Forecast: bins hitting 90% in the next 24 h</h3><div class="col">${h.map((v,i)=>`<div title="+${i}h: ${v} bins" style="height:${v/m*100}%"></div>`).join('')}</div><p class="sm">Left = now, right = +24 h. Rate model per bin, scaled by event and rain settings.</p></div><div class="card"><h3>Next to overflow</h3><table>${s.map(b=>`<tr><td>${b.id}</td><td>${b.zone}</td><td><b>${hrs(b).toFixed(1)} h</b></td></tr>`).join('')}</table></div></div>`},
+recycle:()=>{const tot=Object.values(S.comp).reduce((a,b)=>a+b,0)||1,cl=['#2ee6a6','#4cc9f0','#f4b400','#7a8599','#ff4d6d'];let a=0;
+ const cg=T.map((t,i)=>{const p=S.comp[t]/tot*100,x=`${cl[i]} ${a}% ${a+p}%`;a+=p;return x}).join(',');const rr=(S.comp.Plastic+S.comp.Paper+S.comp.Metal)/tot*100;
+ return `<div class="g c2"><div class="card"><h3>Collected waste mix</h3><div class="row"><div class="donut" style="background:conic-gradient(${tot>1?cg:'#ddd 0 100%'})"></div><div>${T.map((t,i)=>`<p><span class="tag" style="background:${cl[i]}">&nbsp;</span> ${t} ${(S.comp[t]/tot*100).toFixed(0)}%</p>`).join('')}</div></div></div><div class="card"><h3>Recovery rate</h3><div class="big">${tot>1?rr.toFixed(0):0}%</div><p class="sm">Plastic, paper and metal that can re-enter the loop. Target: 60%.</p>${bar(rr,'#2ee6a6')}<p class="sm" style="margin-top:8px">Wait for trucks to collect first; the mix fills in as pickups happen.</p></div></div>`},
+green:()=>{const fuel=S.km*.35,co2=S.kg*.12+S.km*.1;return `<div class="g k">${kpi('CO₂ avoided',co2.toFixed(0)+' kg','landfill diversion + smart routes')}${kpi('Distance driven',S.km.toFixed(1)+' km')}${kpi('Diesel used',fuel.toFixed(1)+' L')}${kpi('Tree equivalent',(co2/21).toFixed(1),'trees absorbing for a year')}</div>`},
+energy:()=>{const kwh=S.comp.Organic*.2;return `<div class="g k">${kpi('Organic collected',S.comp.Organic.toFixed(0)+' kg')}${kpi('Biogas potential',kwh.toFixed(0)+' kWh','about 0.2 kWh per kg')}${kpi('Homes powered',(kwh/30).toFixed(1),'for one day')}</div><div class="card" style="margin-top:14px"><h3>Waste-to-energy plan</h3><p>Organic bins feed an anaerobic digester. Dry recyclables go to sorting. Residual goes to a controlled facility.</p></div>`},
+citizen:()=>`<div class="g c2"><div class="card"><h3>Report a bin</h3><div class="g"><select id="rb" aria-label="Bin">${bins.map(b=>`<option>${b.id}</option>`).join('')}</select><select id="rt" aria-label="Issue"><option>Overflowing</option><option>Bad smell</option><option>Damaged bin</option><option>Other</option></select><input id="rn" placeholder="What did you see? (optional)" maxlength="200"><button onclick="report()">Send report</button><p id="msg" class="sm" role="status"></p></div></div><div class="card"><h3>Zone eco-league</h3><div id="lb"></div></div></div><div class="card" style="margin-top:14px"><h3>Your tickets</h3><div id="tl"></div></div>`,
+lab:()=>`<div class="g c2"><div class="card"><h3>Live hardware feed</h3><p>Sensors POST to <code>/api/ingest</code>. The bin gets a blue ring on the map.</p><div class="row" style="margin:8px 0"><button onclick="hw()">Send test reading to B100</button></div><pre class="sm" style="white-space:pre-wrap">curl -X POST ${location.origin}/api/ingest -H "content-type: application/json" -d '{"id":"B100","fill":97,"temp":31}'</pre></div><div class="card"><h3>Server-side route</h3><p class="sm">Nearest-neighbour plus 2-opt, running in a Vercel function.</p><button onclick="srv()">Optimise on server</button><p id="rs" style="margin-top:8px"></p></div></div>`,
+sim:()=>`<div class="g c2"><div class="card"><h3>What-if simulator</h3><p>Event load <b id="mv">${S.mult.toFixed(1)}</b>x</p><input type="range" min="0.5" max="4" step="0.1" value="${S.mult}" oninput="S.mult=+this.value;$('#mv').textContent=S.mult.toFixed(1)" style="width:100%"><p style="margin-top:10px"><label><input type="checkbox" ${S.rain?'checked':''} onchange="S.rain=this.checked?1:0"> Heavy rain (+20% waste weight)</label></p><div class="row" style="margin-top:10px"><button onclick="S.mult=3;log('crit','Festival surge started');render()">Festival surge</button><button class="alt" onclick="S.mult=1;S.rain=0;render()">Reset</button></div></div><div class="card"><h3>Try this</h3><p>Raise the load, open Predictions, then add trucks in Fleet and watch critical bins drop.</p></div></div>`,
+chat:()=>`<div class="card"><div id="cl" class="cl" aria-live="polite"></div><div class="row">${['Which zone needs trucks first?','How many bins are critical?','Any fire risks?','Explain this project in 30 seconds','How can we improve recycling?'].map(x=>`<button class="alt" onclick="say(this.textContent)">${x}</button>`).join('')}</div><div class="row" style="margin-top:10px"><input id="cq" style="flex:1;min-width:180px" placeholder="Ask about bins, routes, recycling, CO₂..." onkeydown="if(event.key=='Enter')say()"><button onclick="say()">Send</button></div><p class="sm" id="cm" style="margin-top:6px"></p></div>`,
+alerts:()=>`<div class="card"><h3>Alert centre</h3>${L.map(a=>`<div class="al ${a.t}">${a.m}<div class="sm">${a.at}</div></div>`).join('')||'<p class="sm">No alerts yet.</p>'}</div>`
+};
+const N=[['overview','Command centre','Everything at a glance'],['chat','AI assistant','Ask anything about waste and the twin'],['map','Twin map','Click a bin to inspect it'],['sensors','IoT sensors','Fill, heat and battery'],['routes','Route optimiser','Shortest collection tour'],['fleet','Fleet','Trucks and fuel'],['ai','Predictions','When bins will overflow'],['recycle','Recycling','Waste mix and recovery'],['green','Sustainability','Carbon and fuel'],['energy','Waste to energy','Biogas potential'],['citizen','Citizen portal','Report and earn points'],['sim','Simulator','Test events and weather'],['alerts','Alerts','Incidents and fire risk'],['lab','Backend lab','APIs, AI and live hardware']];
+$('#nav').insertAdjacentHTML('beforeend',N.map(n=>`<a tabindex="0" data-k="${n[0]}" onclick="go('${n[0]}')">${n[1]}</a>`).join(''));
+function go(k){cur=k;location.hash=k;render()}
+function render(){const n=N.find(x=>x[0]==cur);$('#ttl').textContent=n[1];$('#sub').textContent=n[2];document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.dataset.k==cur));$('#v').innerHTML=V[cur]();if(cur=='citizen')paintTK();if(cur=='chat')paintChat()}
+function tick(){tk++;
+ bins.forEach(b=>{if(!b.hw)b.fill=Math.min(100,b.fill+b.rate*S.mult*(S.rain?1.2:1));b.temp+=(Math.random()-.5);if(Math.random()<.0015)b.temp=55+rnd(0,8);else if(b.temp>40)b.temp-=2;b.bat=Math.max(5,b.bat-.02);
+  if(b.fill>=90&&!b.al){b.al=1;log('crit',`${b.id} (${b.zone}) is ${b.fill|0}% full`)}if(b.fill<90)b.al=0;
+  if(b.temp>50&&!b.fire){b.fire=1;log('fire',`${b.id} at ${b.temp|0}°C. Fire risk, send inspection`)}if(b.temp<=50)b.fire=0});
+ trucks.forEach(t=>{if(!t.tgt){const c=bins.filter(b=>(b.fill>=70||b.flag)&&!b.taken).sort((a,b)=>d(t,a)-d(t,b))[0];if(c){c.taken=t.id;t.tgt=c}}
+  const g=t.tgt||DEP,ds=d(t,g);
+  if(ds<14){if(t.tgt){const b=t.tgt,kg=b.fill*1.2;S.kg+=kg;S.comp[b.type]+=kg;b.fill=rnd(0,5);b.taken=null;b.flag=0;TK.forEach(k=>{if(k.bin==b.id&&k.st<2){k.st=2;S.pts[b.zone]+=10;saveTK()}});t.tgt=null;t.trips++;log('ok',`${t.id} emptied ${b.id}`)}else t.fuel=100}
+  else{t.x+=(g.x-t.x)/ds*14;t.y+=(g.y-t.y)/ds*14;S.km+=14*.04;t.fuel=Math.max(0,t.fuel-.06)}});
+ TK.forEach(k=>{const b=bins.find(x=>x.id==k.bin);if(k.st==0&&b&&b.taken){k.st=1;saveTK()}});
+ $('#clk').textContent=new Date().toLocaleTimeString();
+ if(cur=='citizen')paintTK();else if(!['sim','lab','chat'].includes(cur))render()}
+cur=(location.hash||'#overview').slice(1);if(!V[cur])cur='overview';
+render();tick();setInterval(tick,1200);
+</script></body></html>

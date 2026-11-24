@@ -1,0 +1,9 @@
+{
+  "name": "ecotwin",
+  "version": "1.0.0",
+  "description": "Smart Waste Management Digital Twin",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "express": "^4.19.2" }
+}
